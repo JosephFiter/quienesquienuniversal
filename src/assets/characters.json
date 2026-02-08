@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Ana",
+    "image": "./characters/Ana.svg"
+  },
+  {
+    "id": 2,
+    "name": "Beto",
+    "image": "./characters/Beto.svg"
+  },
+  {
+    "id": 3,
+    "name": "Carla",
+    "image": "./characters/Carla.svg"
+  },
+  {
+    "id": 4,
+    "name": "Daniel",
+    "image": "./characters/Daniel.svg"
+  },
+  {
+    "id": 5,
+    "name": "Elena",
+    "image": "./characters/Elena.svg"
+  },
+  {
+    "id": 6,
+    "name": "Felipe",
+    "image": "./characters/Felipe.svg"
+  },
+  {
+    "id": 7,
+    "name": "Gabriela",
+    "image": "./characters/Gabriela.svg"
+  },
+  {
+    "id": 8,
+    "name": "Hector",
+    "image": "./characters/Hector.svg"
+  },
+  {
+    "id": 9,
+    "name": "Irene",
+    "image": "./characters/Irene.svg"
+  },
+  {
+    "id": 10,
+    "name": "Juan",
+    "image": "./characters/Juan.svg"
+  },
+  {
+    "id": 11,
+    "name": "Laura",
+    "image": "./characters/Laura.svg"
+  },
+  {
+    "id": 12,
+    "name": "Martin",
+    "image": "./characters/Martin.svg"
+  }
+]

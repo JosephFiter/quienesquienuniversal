@@ -1,0 +1,25 @@
+.board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+    padding: 10px;
+}
+
+.character-card {
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s, opacity 0.3s, border-color 0.3s;
+}
+
+.character-card img {
+    width: 100%;
+    height: auto;
+}
+
+.character-card.eliminated {
+    border-color: red;
+    opacity: 0.6;
+}
