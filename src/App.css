@@ -95,3 +95,156 @@ li {
 div > h2 {
     margin-top: 40px;
 }
+
+/* Game page */
+.game-container {
+    text-align: center;
+}
+
+.game-loading,
+.game-waiting {
+    padding: 2rem;
+    font-size: 1.1rem;
+}
+
+.game-waiting strong {
+    color: var(--accent-gold);
+}
+
+.game-toolbar {
+    margin: 1rem 0;
+}
+
+.btn-arriesgar {
+    font-size: 1rem;
+    padding: 12px 24px;
+}
+
+/* Finished game */
+.game-finished {
+    padding: 2rem;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.game-finished h1 {
+    margin-bottom: 1.5rem;
+}
+
+.result-message {
+    font-size: 1.25rem;
+    margin: 1rem 0;
+}
+
+.result-win {
+    color: var(--accent-gold);
+    font-weight: bold;
+}
+
+.result-lose {
+    color: var(--accent-red);
+}
+
+.result-tie {
+    color: var(--accent-gold);
+}
+
+.revealed-character {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--text-color);
+}
+
+.revealed-character strong {
+    color: var(--accent-gold);
+}
+
+.warning-extra {
+    display: block;
+    margin-top: 0.5rem;
+    color: var(--accent-red);
+    font-weight: bold;
+}
+
+/* Modals (medieval Balatro style) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-risk-overlay {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+.modal {
+    background: var(--card-bg-color);
+    border: 3px solid var(--accent-gold);
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--accent-gold);
+}
+
+.modal-warning p {
+    margin: 0.75rem 0;
+    text-align: center;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+}
+
+.btn-confirm {
+    background-color: #2e7d32;
+}
+
+.btn-confirm:hover {
+    background-color: #1b5e20;
+}
+
+.modal-risk {
+    width: 100%;
+    max-width: 700px;
+}
+
+.modal-risk .board {
+    margin: 1rem 0;
+    max-height: 50vh;
+    overflow-y: auto;
+}
+
+.risk-hint {
+    font-size: 0.95rem;
+    color: var(--text-color);
+    opacity: 0.9;
+    margin-bottom: 0.5rem;
+}
+
+.btn-listo {
+    font-size: 1.1rem;
+    padding: 12px 28px;
+}
+
+button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}

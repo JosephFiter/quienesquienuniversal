@@ -1,4 +1,4 @@
-import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, onSnapshot, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc, getDoc, updateDoc, onSnapshot, query, where, getDocs, runTransaction } from "firebase/firestore";
 import app from "../firebase";
 
 const db = getFirestore(app);
@@ -28,7 +28,6 @@ export const createGame = async (userId, customGameId) => {
         players: [userId],
         status: "waiting",
         createdAt: new Date(),
-        turn: userId,
     });
     return gameId;
 };
@@ -106,17 +105,79 @@ export const updatePlayerCharacter = async (gameId, userId, character) => {
     const characters = gameData.characters || {};
     characters[userId] = character;
     await updateDoc(gameDoc.ref, { characters });
-}
+};
 
-export const switchTurn = async (gameId) => {
+/** Lista de ids de personajes que este jugador marcó como descartados (para contar "turnos") */
+export const updatePlayerEliminatedIds = async (gameId, userId, eliminatedIds) => {
     const q = query(collection(db, "games"), where("gameId", "==", gameId));
     const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
-        throw new Error("Game not found");
-    }
+    if (querySnapshot.empty) throw new Error("Game not found");
     const gameDoc = querySnapshot.docs[0];
     const gameData = gameDoc.data();
-    const currentPlayer = gameData.turn;
-    const nextPlayer = gameData.players.find(p => p !== currentPlayer);
-    await updateDoc(gameDoc.ref, { turn: nextPlayer });
+    const playerEliminatedIds = { ...(gameData.playerEliminatedIds || {}), [userId]: eliminatedIds };
+    await updateDoc(gameDoc.ref, { playerEliminatedIds });
 };
+
+/** Abre la fase de arriesgar para ambos jugadores */
+export const startRiskPhase = async (gameId) => {
+    const q = query(collection(db, "games"), where("gameId", "==", gameId));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) throw new Error("Game not found");
+    const gameDoc = querySnapshot.docs[0];
+    await updateDoc(gameDoc.ref, {
+        riskPhase: true,
+        riskSelections: {},
+        riskReady: {},
+    });
+};
+
+/** Jugador elige qué personaje arriesga (el que cree que tiene el rival) */
+export const setRiskSelection = async (gameId, userId, characterId) => {
+    const q = query(collection(db, "games"), where("gameId", "==", gameId));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) throw new Error("Game not found");
+    const gameDoc = querySnapshot.docs[0];
+    const gameData = gameDoc.data();
+    const riskSelections = { ...(gameData.riskSelections || {}), [userId]: characterId };
+    await updateDoc(gameDoc.ref, { riskSelections });
+};
+
+/** Jugador marca "Listo" en la fase de arriesgar. gameDocId = id del documento en Firestore (game.id). */
+export const setRiskReady = async (gameDocId, userId) => {
+    const gameRef = doc(db, "games", gameDocId);
+    await runTransaction(db, async (transaction) => {
+        const snap = await transaction.get(gameRef);
+        if (!snap.exists()) throw new Error("Game not found");
+        const gameData = snap.data();
+        const riskReady = { ...(gameData.riskReady || {}), [userId]: true };
+        transaction.update(gameRef, { riskReady });
+    });
+};
+
+/** Cierra la fase de arriesgar con resultado: ganador/perdedor/empate. Incluir winnerId, loserId, isTie, loserRevealedCharacter. */
+export const finishRiskPhase = async (gameId, payload) => {
+    const q = query(collection(db, "games"), where("gameId", "==", gameId));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) throw new Error("Game not found");
+    const gameDoc = querySnapshot.docs[0];
+    await updateDoc(gameDoc.ref, {
+        status: "finished",
+        riskPhase: false,
+        riskSelections: {},
+        riskReady: {},
+        ...payload,
+    });
+};
+
+/** Ambos fallaron: solo cerrar fase de arriesgar y seguir jugando */
+export const clearRiskPhase = async (gameId) => {
+    const q = query(collection(db, "games"), where("gameId", "==", gameId));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) throw new Error("Game not found");
+    const gameDoc = querySnapshot.docs[0];
+    await updateDoc(gameDoc.ref, {
+        riskPhase: false,
+        riskSelections: {},
+        riskReady: {},
+    });
+}

@@ -5,6 +5,11 @@
     padding: 10px;
 }
 
+.board-locked .character-card {
+    pointer-events: none;
+    opacity: 0.9;
+}
+
 .character-card {
     border: 2px solid transparent;
     border-radius: 8px;
@@ -20,6 +25,22 @@
 }
 
 .character-card.eliminated {
-    border-color: red;
-    opacity: 0.6;
+    border-color: var(--accent-red, red);
+    opacity: 0.7;
+    position: relative;
+}
+
+.character-card.eliminated::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    border-radius: 6px;
+    pointer-events: none;
+}
+
+.character-card.selected {
+    border-color: var(--accent-gold, gold);
+    border-width: 3px;
+    box-shadow: 0 0 12px var(--accent-gold, gold);
 }
