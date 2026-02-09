@@ -176,14 +176,8 @@ const Game = () => {
                     <div className="modal modal-warning" onClick={(e) => e.stopPropagation()}>
                         <h3>Antes de arriesgar</h3>
                         <p>
-                            Ambos jugadores deben haber hecho la misma cantidad de turnos (descartado la misma
-                            cantidad de personajes).
-                            {!sameTurnCount && (
-                                <span className="warning-extra">
-                                    {' '}
-                                    Actualmente no coinciden ({myEliminatedIds.length} vs {opponentEliminatedIds.length}).
-                                </span>
-                            )}
+                            Estas seguro que quieres arriesgar?
+                           
                         </p>
                         <p>¿Deseas continuar?</p>
                         <div className="modal-actions">
