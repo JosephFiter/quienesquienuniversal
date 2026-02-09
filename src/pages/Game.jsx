@@ -144,6 +144,8 @@ const Game = () => {
         const iWon = game.winnerId === userId;
         const iLost = game.loserId === userId;
         const revealed = game.loserRevealedCharacter;
+        const oppId = game.players?.find((p) => p !== userId);
+        const opponentChar = (game.characters && oppId && game.characters[oppId]) || revealed || null;
 
         return (
             <div className="game-finished">
@@ -155,9 +157,9 @@ const Game = () => {
                 ) : iLost ? (
                     <div className="result-message result-lose">
                         <p>Perdiste.</p>
-                        {revealed && (
+                        {opponentChar && (
                             <p className="revealed-character">
-                                El personaje del otro jugador era: <strong>{revealed.name}</strong>
+                                El personaje del otro jugador era: <strong>{opponentChar.name}</strong>
                             </p>
                         )}
                     </div>

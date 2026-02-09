@@ -64,7 +64,6 @@ const Settings = ({ onClose }) => {
             await navigator.clipboard.writeText(txt);
             alert('Código copiado al portapapeles');
         } catch (e) {
-            // fallback
             const ta = document.createElement('textarea');
             ta.value = txt;
             document.body.appendChild(ta);
