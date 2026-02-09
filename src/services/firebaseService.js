@@ -13,7 +13,7 @@ export const isGameIdAvailable = async (gameId) => {
     return querySnapshot.empty;
 };
 
-export const createGame = async (userId, customGameId) => {
+export const createGame = async (userId, customGameId, characterList = null) => {
     const gameId = customGameId || generateId();
 
     if (customGameId) {
@@ -28,6 +28,8 @@ export const createGame = async (userId, customGameId) => {
         players: [userId],
         status: "waiting",
         createdAt: new Date(),
+        characterList: Array.isArray(characterList) ? characterList : null,
+        creatorId: userId,
     });
     return gameId;
 };

@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import initialCharacters from '../assets/characters.json';
 import './Board.css';
 
-const Board = ({ eliminatedIds = [], onEliminatedChange, selectMode = false, selectedId, onSelect, selectionLocked = false }) => {
+const Board = ({ eliminatedIds = [], onEliminatedChange, selectMode = false, selectedId, onSelect, selectionLocked = false, characters = null }) => {
     const idsSet = useMemo(() => new Set(eliminatedIds), [eliminatedIds]);
 
     const handleCharacterClick = (clickedCharacter) => {
@@ -19,7 +19,8 @@ const Board = ({ eliminatedIds = [], onEliminatedChange, selectMode = false, sel
     };
 
     const sortedCharacters = useMemo(() => {
-        const list = initialCharacters.map((c) => ({
+        const chars = Array.isArray(characters) && characters.length ? characters : initialCharacters;
+        const list = chars.map((c) => ({
             ...c,
             eliminated: idsSet.has(c.id),
             selected: selectMode && selectedId === c.id,
@@ -36,7 +37,7 @@ const Board = ({ eliminatedIds = [], onEliminatedChange, selectMode = false, sel
                     className={`character-card ${character.eliminated ? 'eliminated' : ''} ${character.selected ? 'selected' : ''}`}
                     onClick={() => handleCharacterClick(character)}
                 >
-                    <img src={character.image} alt={character.name} />
+                    {character.image ? <img src={character.image} alt={character.name} /> : null}
                     <p>{character.name}</p>
                 </div>
             ))}

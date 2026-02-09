@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createGame, joinGame } from '../services/firebaseService';
 import Lobby from '../components/Lobby';
+import Settings from '../components/Settings';
 
 const Home = () => {
     const [joinGameId, setJoinGameId] = useState('');
@@ -20,7 +21,23 @@ const Home = () => {
     const handleCreateGame = async () => {
         const userId = getUserId();
         try {
-            const newGameId = await createGame(userId, createGameId);
+            // build selected character list (the creator's list) to send to createGame
+            let characterList = null;
+            try {
+                const stored = localStorage.getItem('customCharacterLists');
+                const selected = localStorage.getItem('selectedCharacterList');
+                if (stored && selected) {
+                    const lists = JSON.parse(stored || '{}');
+                    const chars = lists[selected];
+                    if (Array.isArray(chars) && chars.length) {
+                        characterList = chars.map((c, idx) => ({ id: Number(c.id ?? idx + 1), name: c.name, image: c.image || '' }));
+                    }
+                }
+            } catch (e) {
+                characterList = null;
+            }
+
+            const newGameId = await createGame(userId, createGameId, characterList);
             navigate(`/game/${newGameId}`);
         } catch (error) {
             alert(error.message);
@@ -35,9 +52,12 @@ const Home = () => {
         navigate(`/game/${joinGameId}`);
     };
 
+    const [showSettings, setShowSettings] = useState(false);
+
     return (
         <div>
             <h1>¿Quién es Quién?</h1>
+            <button onClick={() => setShowSettings(true)}>Configuración</button>
             <div>
                 <input
                     type="text"
@@ -57,6 +77,7 @@ const Home = () => {
                 <button onClick={handleJoinGame}>Unirse a Partida Privada</button>
             </div>
             <Lobby />
+            {showSettings && <Settings onClose={() => setShowSettings(false)} />}
         </div>
     );
 };

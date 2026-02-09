@@ -10,7 +10,7 @@ import {
     finishRiskPhase,
     clearRiskPhase,
 } from '../services/firebaseService';
-import characters from '../assets/characters.json';
+import defaultCharacters from '../assets/characters.json';
 import Board from '../components/Board';
 import Chat from '../components/Chat';
 
@@ -39,7 +39,22 @@ const Game = () => {
                 if (gameData.characters?.[userId]) {
                     setMyCharacter(gameData.characters[userId]);
                 } else {
-                    const character = characters[Math.floor(Math.random() * characters.length)];
+                    const pool = (Array.isArray(gameData.characterList) && gameData.characterList.length)
+                        ? gameData.characterList
+                        : (() => {
+                            try {
+                                const stored = localStorage.getItem('customCharacterLists');
+                                const selected = localStorage.getItem('selectedCharacterList');
+                                if (!stored || !selected) return defaultCharacters;
+                                const lists = JSON.parse(stored || '{}');
+                                const chars = lists[selected];
+                                if (!Array.isArray(chars)) return defaultCharacters;
+                                return chars.map((c, idx) => ({ id: Number(c.id ?? idx + 1), name: c.name, image: c.image || '' }));
+                            } catch (e) {
+                                return defaultCharacters;
+                            }
+                        })();
+                    const character = pool[Math.floor(Math.random() * pool.length)];
                     setMyCharacter(character);
                     updatePlayerCharacter(gameId, userId, character);
                 }
@@ -167,6 +182,7 @@ const Game = () => {
             <Board
                 eliminatedIds={myEliminatedIds}
                 onEliminatedChange={handleEliminatedChange}
+                characters={(Array.isArray(game?.characterList) && game.characterList.length) ? game.characterList : defaultCharacters}
             />
 
             <Chat gameId={gameId} />
@@ -205,6 +221,7 @@ const Game = () => {
                             selectedId={riskSelection}
                             onSelect={riskReady[userId] ? undefined : handleRiskSelect}
                             selectionLocked={riskReady[userId]}
+                            characters={(Array.isArray(game?.characterList) && game.characterList.length) ? game.characterList : defaultCharacters}
                         />
                         <div className="modal-actions">
                             <button
